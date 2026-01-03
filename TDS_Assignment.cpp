@@ -44,6 +44,22 @@ void quicksort(vector<Student>& arr, int low, int high){ //pass the vector refer
     }
 }
 
+void insertionSort(vector<Student>& arr) {
+    int n = arr.size();
+    for (int i = 1; i < n; i++) {
+        Student key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j].marks > key.marks) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+
+
 
 int main(){
     cout << "This is the Insertion Sort & Quick Sort Application on Student Exam Scores\n";
@@ -91,10 +107,24 @@ int main(){
     
     // Now we proceed to process studentlist after we added all the list
     if (!studentlist.empty()){
-        // pass the vector struct to the quicksort function
-        // three thing to pass, one is array, one is the begining position, one is last position
-        quicksort(studentlist, 0, studentlist.size()-1);
-        cout << "Successfully sorted!" << endl;
+        int choice;
+        cout << "Please choose your preferred sort method: "<< endl;
+        cout << "1. Quick Sort\n";
+        cout << "2. Insertion Sort\n";
+        cout << "Enter choice (1 or 2): ";
+        cin >> choice;
+
+        if (choice == 1) {
+            // pass the vector struct to the quicksort function
+            // three thing to pass, one is array, one is the begining position, one is last position
+            quicksort(studentlist, 0, studentlist.size() - 1);
+            cout << "Successfully sorted using Quick Sort!" << endl;
+        } else if (choice == 2) {
+            insertionSort(studentlist);
+            cout << "Successfully sorted using Insertion Sort!" << endl;
+        } else {
+            cout << "Invalid choice. Sorting skipped." << endl;
+        }
     }
         
     cout << "\nSorted Results (ID, Marks): \n";
@@ -117,5 +147,8 @@ int main(){
         cout << "Error: Could not create output file." << endl;
     }
 
+
+
+   
     return 0;
 }
