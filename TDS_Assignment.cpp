@@ -9,19 +9,49 @@ struct Student {
     string id;
     float marks;
     // here we use struct for better managing the input data, seperate out the id and the marks
+};
+
+// partition used to swap the position, then find out the pivot for the partition
+int partition(vector<Student>& arr, int low, int high){
+    float pivot = arr[high].marks; // the last position will become the pivot
+    int i =(low-1); // position of the i we set it before the j
+
+    for(int j = low; j < high; j++){
+        // partitioning based on floating point comparison, smaller than pivot go to left, larger go to right
+        if(arr[j].marks < pivot){ //if the mark of the j smaller than pivot mark
+            i++; // move the i point to the next position (i point to the sorted arr)
+            // swap the position using temp
+            Student temp = arr[i];
+            arr[i] = arr[j];
+            arr[j]= temp;
+        }
+    } // for loop end when the j point to the last position
+
+    Student temp = arr[i + 1]; // swap the position of the pivot to the current i position + 1
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+
+    return (i + 1); // return the position of this time run
 }
 
-int partition()
-void quicksort()
+
+// standard function on processing quicksort
+void quicksort(vector<Student>& arr, int low, int high){ //pass the vector reference 
+    if(low < high){ // if the first position not yet pass the last position
+        int pivot_index = partition(arr, low, high);
+        quicksort(arr, low, pivot_index -1);
+        quicksort(arr, pivot_index + 1, high);
+    }
+}
 
 
 int main(){
     cout << "This is the Insertion Sort & Quick Sort Application on Student Exam Scores\n";
 
     vector<Student> studentlist; // declare a vector, it help us to process the data more conveniently
-    fstream StudentScore;
-    
-    StudentScore.open("ExamScore.txt", ios::in); // this is the read file
+    ifstream StudentScore ("ExamScore.txt");
+
+    //Read the file
     if (StudentScore.is_open()){
         string line;
         // using while loop to read the file, end when no more line to read
@@ -52,14 +82,40 @@ int main(){
                     continue;
                 }
             }
-            StudentScore.close(); // close the file after reads all the data.
-
         }
+        StudentScore.close(); // close the file after reads all the data.
+    }else{ // this is the exception case
+        cout << "Error: Could not find the exam file" << endl;
+        return 1;
+    }
+    
+    // Now we proceed to process studentlist after we added all the list
+    if (!studentlist.empty()){
+        // pass the vector struct to the quicksort function
+        // three thing to pass, one is array, one is the begining position, one is last position
+        quicksort(studentlist, 0, studentlist.size()-1);
+        cout << "Successfully sorted!" << endl;
+    }
+        
+    cout << "\nSorted Results (ID, Marks): \n";
+        
+    // we use auto& to save memory in running since it is using reference
+    for (const auto& s : studentlist){
+        cout << s.id << "," << s.marks << endl;
     }
 
+    ofstream outputStudentScore("Sorted_ExamScore.txt");
+    if (outputStudentScore.is_open()) {
+        // similar meethod on cout
+        for (const auto& s : studentlist) {
+            // Writing format: ID,Marks
+            outputStudentScore << s.id << ", " << s.marks << endl;
+        }
+        outputStudentScore.close();
+        cout << "Sorted data has been saved to 'Sorted_ExamScore.txt'.\n";
+    } else {
+        cout << "Error: Could not create output file." << endl;
+    }
 
-
-
-
-
+    return 0;
 }
