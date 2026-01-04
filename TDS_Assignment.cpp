@@ -2,6 +2,7 @@
 #include <fstream> // for file handling
 #include <string> // this is for the read file purpose, clean the data
 #include <vector> // for processing the exam score data
+#include <chrono> // for the time comparison 
 
 using namespace std; // we use this just to simplify the writing
 
@@ -108,34 +109,47 @@ int main(){
     // Now we proceed to process studentlist after we added all the list
     if (!studentlist.empty()){
         int choice;
+        long long timetaken = 0; // for recording the time
+        chrono::high_resolution_clock::time_point start, end;
         cout << "Please choose your preferred sort method: "<< endl;
         cout << "1. Quick Sort\n";
         cout << "2. Insertion Sort\n";
         cout << "Enter choice (1 or 2): ";
         cin >> choice;
 
-        if (choice == 1) {
+        switch (choice)
+        {
+        case 1:
+            // Here we start the timer to calculate the time using
+            start = chrono::high_resolution_clock::now();
             // pass the vector struct to the quicksort function
             // three thing to pass, one is array, one is the begining position, one is last position
             quicksort(studentlist, 0, studentlist.size() - 1);
+            // After finish, we end the clock timing
+            end = chrono::high_resolution_clock::now();
+            //After get the time from start and end, we find the different
+            timetaken = chrono::duration_cast<chrono::nanoseconds>(end-start).count();
             cout << "Successfully sorted using Quick Sort!" << endl;
-        } else if (choice == 2) {
+            break;
+        case 2:
+            start = chrono::high_resolution_clock::now();
             insertionSort(studentlist);
+            end = chrono::high_resolution_clock::now();
+            timetaken = chrono::duration_cast<chrono::nanoseconds>(end-start).count();
             cout << "Successfully sorted using Insertion Sort!" << endl;
-        } else {
+            break;
+        
+        default:
             cout << "Invalid choice. Sorting skipped." << endl;
+            break;
         }
-    }
-        
-    cout << "\nSorted Results (ID, Marks): \n";
-        
-    // we use auto& to save memory in running since it is using reference
-    for (const auto& s : studentlist){
-        cout << s.id << "," << s.marks << endl;
-    }
-
-    ofstream outputStudentScore("Sorted_ExamScore.txt");
-    if (outputStudentScore.is_open()) {
+            
+        ofstream outputStudentScore("Sorted_ExamScore.txt");
+        if (outputStudentScore.is_open()) {
+        // Write the performance header first
+        outputStudentScore << "Sort Method: " << (choice == 1 ? "Quick Sort" : "Insertion Sort") << endl;
+        outputStudentScore << "Time Taken: " << timetaken << " nanoseconds" << endl;
+        outputStudentScore << "--------------------------" << endl;
         // similar meethod on cout
         for (const auto& s : studentlist) {
             // Writing format: ID,Marks
@@ -143,12 +157,19 @@ int main(){
         }
         outputStudentScore.close();
         cout << "Sorted data has been saved to 'Sorted_ExamScore.txt'.\n";
-    } else {
+        } else {
         cout << "Error: Could not create output file." << endl;
-    }
+        }
 
+    }else
+        cout << "The File open failed!" << endl;
+        
+    // cout << "\nSorted Results (ID, Marks): \n";
+        
+    // // we use auto& to save memory in running since it is using reference
+    // for (const auto& s : studentlist){
+    //     cout << s.id << "," << s.marks << endl;
+    // }
 
-
-   
     return 0;
 }
