@@ -1,5 +1,5 @@
 Sort Method: Insertion Sort
-Time Taken: 1986000 nanoseconds
+Time Taken: 1428000 nanoseconds
 --------------------------
 889UT2880K, 0
 013UT054FA, 0

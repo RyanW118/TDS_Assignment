@@ -143,7 +143,8 @@ int main(){
             cout << "Invalid choice. Sorting skipped." << endl;
             break;
         }
-            
+        cout << "Time Taken: " << timetaken << " nanoseconds" << endl;     
+
         ofstream outputStudentScore("Sorted_ExamScore.txt");
         if (outputStudentScore.is_open()) {
         // Write the performance header first
